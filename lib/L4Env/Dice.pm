@@ -12,7 +12,7 @@ require DynaLoader;
 use strict;
 
 use vars qw($VERSION @ISA);
-$VERSION = '0.01';
+$VERSION = '0.01_1';
 
 @ISA = qw( DynaLoader );
 
@@ -26,93 +26,52 @@ __END__
 
 =head1 NAME
 
-L4Env::Dice - Access L4 primitives with L4Env and Dice compiler.
+L4Env::Dice - perl extension to L4 primitives 
 
 =head1 SYNOPSIS
 
-	# in your subclass: 
-  	package MyCompiler::Foo;
+	# in your subclasses: 
+  	package MyCompiler::Dice;
   	use base 'L4Env::Dice';
 
  	write code here ...
 
 	1;
 
- 	# in your packages:
- 	package MyBicycle::Wheels;
-
-  	use MyCompiler::Foo;
-
- 	# for gnu hooks...
-  	use MyCompiler::Dice ':gnu';
-
- 	# POSIX
- 	use MyCompiler::Dice ':posix';
-
-	# get the compiler 
-	my $compiler = MyCompiler::Dice->compiler;
-
-	# generate hello_woerl.h 
-	my $woerl = $compiler->generate_dice( ... );
-
-	# output to string 
-	$woerl->as_string;
-
-	# generate include/config.h,
-	# this file should care about compiling 
-	# with dice...
-	$woerl->gen_config_h;
+	# on the command line:
+	perl -MO=dice, -i [<idl string>] -o [output]
 
 =head1 DESCRIPTION
 
 This module gives the ability to compile packages which
 understands L4 primitives.  
 
-The basic idea  consist of importing L4Env I<symbols>
+The basic idea  consist of linking L4Env I<symbols>
 inside our I<namespace>.
 
-=head2 IMPORTING SYMBOLS WITH H2XS 
+=head2 Generating code on the fly with h2xs
 
-L<h2xs> is a tool designed to produce XS code from C headers files. 
-For instance, h2xs make it easy to generate XS stub files, and
-then by running F<xsubpp> with B<make> to produces binaries
-at compilation time. 
+L<h2xs> is a great tool designed to produce valuable XS code 
+from,  say, C headers files. 
 
-=head2 CONFIGURATION
+All of the darker stuff is done transparently to the user,
+because we haven't written any C code yet. 
 
-Configurable elements are defined in the file F<include/template_config.h>.
+Invoking the B::C backend:
 
-=over 
+	# compile into a binary executable file:    
+	perl -MO=C, -o some_app some_app.pm 
 
-=item * HAVE_DROPS_ENV
+=head2 Wrapping our L4 interface in perl 
 
-Defined if F<drops> exists and if it's a directory..
+The next step consist of evalutating how code 
+is passed to the stub compiler in perl.
 
-=item * HAVE_L4_STUB_GENERATOR
+REQUIRE: dice (or idl4) requires valid idl.
+ 
+=head1 CHECKLIST 
 
-Will point to either one of B<dice> or B<idl4> or better..
-
-=item * HAVE_L4_USER_DDE
-
-Defined if we're aware of the current mecanism used
-by device drivers in L4. 
-
-=item * HAVE_L4_USER_DDE_LINUX
-
-Defined if the DDE librairy we're using points to DDE_LINUX. 
-
-=item * HAVE_DL_OPEN 
-
-Use B<dl_open> mecanism for dynamically linking with 
-L4Env symbols.
-
-=back
-
-=head1 A NON EXTENSIVE CHECKLIST 
-
-You can get the following packages from Drops CVS.
-
-=head2 REQUIRED
+=head2 Required 
 
 =over
 
@@ -124,7 +83,7 @@ You can get the following packages from Drops CVS.
 
 =back
 
-=head2 OPTIONAL BUT STRONGLY ENCOURAGED
+=head2 Recommended
 
 =over
 
@@ -134,56 +93,94 @@ You can get the following packages from Drops CVS.
 
 =item * a /boot filesystem (ufs, ext2fs, ...)           
 
-=item * a grub_config somewhere in /boot 
+=item * a grub_config somewhere in /boot
 
+=head2 Optional
+
+=item * L<B::C> backend (bundled with perl) 
+
+=item * L<perlcc> 
+ 
 =back 
 
-=head1  PORTING TO SOME PLATFORM
+=head1 CONFIGURATION
 
-Several more specialized interfaces are made available to the end-user.
+=head2  The config.h method
 
-=head2 L4Env::Dice::Base
+The user is expected to provide his own config.h, describing 
+in more details the aspect of linking the resulting binary
+for L4 environments.
 
-Very basic support is included inside this module. For subclassing, 
-do C<use base 'L4Env::Dice'>.
+This basically means to:
 
-=head2 L4Env::Dice::POSIX
+	cp include/template_config.h /my_module/config.h
 
-=head3 L4Env::Dice::POSIX::Pthread
+Further descriptions on the relationships between the linker 
+and the stub generator (dice) should be added inside this file as well.
 
-=head2 L4Env::Dice::GNU
+The config.h used by perl contains 
+machine specific optimizations for our current libperl object.
 
-Write hooks for Fabrica, Hurd/L4. 
+=over 
 
-=head1 On writing L4-Linux compatible headers
+=item * HAVE_DROPS_L4_ENV
 
-See L<WRITING YOUR OWN HELLO WORLD MODULE> below.
+Defined if the directory F<drops> exists and containts I<$(L4_STDDIR)>.
+This one is not known to exists at other places on earth than here. 
 
-=head1 On compiling the Lites single-server with L4Env
+=item * HAVE_DROPS_L4_STUB_GENERATOR
 
-=head2 Introduction         
+If defined, allows us to call the stub compiler directly:
 
-The Lites single-server is the work of Johannes Helander, and thus
-served has his master-thesis proposal. 
+	perl -ML4Env::Dice, -bc backend.cf -f <file> 
 
-Several years later, Michael Helmuth and XXX from Tu-Dresden University 
-conducted experimentations on running Lites on L3. 
+Or with aliases (dice.pm being aliased as a perl back-end):
 
-=head2 Running Lites-L4 as a L4Env package
+	perl -MB=dice, -fc frontend.cf -f <file>
 
-The idea here is that we want to separate code from
-the CMU Mach base to the new B<POSIX> Pthread librairy.
+=item * HAVE_DROPS_L4_DDE
 
-=over
+Defined if we're aware of the current mecanism used
+by device drivers in L4. 
 
-=item * The F<POSIX.pm> might help at this point. 
+=item * HAVE_DROPS_L4_DDE_LINUX
 
-=item * Note that  F<h2xs> utility is great for generating XS code from
-C headers file. Refer to L<perlxs> and L<perlxstut>. 
+Defined if the DDE librairy we're using points to I<$DDE_LINUX>. 
+
+=item * HAVE_DROPS_L4_DDE_LINUX_DEBUG
+
+Define this if you want DEBUG symbols to be compiled inside
+the binary executable.
+
+=item * HAVE_DLFCN_H  
+
+Defined if dlfcn.h is found. 
+
+=item * USE_DL_OPEN 
+
+If defined, use B<dl_open> et al facilities 
+for dynamically linking with L4Env symbolic. 
 
 =back
 
-=head1 WRITING YOUR OWN HELLO WORLD MODULE 
+=head1 NOTES ON PORTING 
+
+Several more specialized interfaces are made available to the end-user.
+
+=head2 Subclassing L4Env::Dice::Base
+
+This package is expected to contains basic methods available
+to the public.  
+
+=head2 Subclassing L4Env::Dice::POSIX
+
+TODO
+
+=head2 Subclassing L4Env::Dice::GNU
+
+Write hooks for Hurd/L4. 
+
+=head1 EXAMPLES 
 
 Writing your own L4 hello world client/server should be relatively
 easy to achieve by using this module as-is. It can sound something
@@ -197,27 +194,34 @@ similar to:
 
 	1;
 
-=head2 Compiling your foo.pl in C code:
+Convert your perl-script to idl:
 
-	perl -MO=C, [options] -o $(INTERFACE) foo.pl
+	perl -MO=dice, [options] -o foo_interface.idl foo.pl
 
-Then run dice over the binary for compiling L4 stubs:
+Run dice over the binary for compiling L4 stubs:
 	
-	$(DICE) [options] $(INTERFACE) ... 
+	dice [options] foo_interface.idl ...
 
 In your grub /boot/config:
 
 	...
-	module=/my/perl/interface
+	module=/my/perl/foo_interface [options]
+	...
 
-Boot as usual...
+Boot kernel as usual...
 
-=head2 Experimental interface-dependant trigerring:
+=head2 Compiling for a particular arch
 
-A more detailed example. Enable (purists: import) C-strict 
-aliasing with the ':ansi' switch.
+You need to subclass and possibly glue, fix things
+for your system.
 
-	use Package::Client ':ansi'; 
+For example, we want to import hooks
+for the Linux Device Drivers Framework (DDF).
+
+	# import methods from L4Env to perl
+	use Package::Client ':my_user_ddf';
+
+	# melt-in POSIX dependencies  
 	use POSIX;
 
 	# you write or import 'new'  
@@ -227,21 +231,20 @@ aliasing with the ':ansi' switch.
 
 =head1 SEE ALSO
 
-Fiasco, Pistachio, L4-Linux, DDE (L4Env) and GNU Hurd/L4.
+L4 implementations; the Devices Drivers Framework (DDF) for L4-Linux.
 
-There's actually  lot others which you can find 
-only by trusting Googlee...
+The B<preprocess> utility 
+at http://os.inf.tu-dresden.de/~hohmuth/prj/preprocess/
+
+perlcc(1).
 
 perl(1).
 
 =head1 BUGS
 
-Plenty of courses :-) 
+The rationale aspect is left as an exercise to the reader.
 
-Documentation falls in the category were it is almost
-completly out-of-date.. 
-
-- SYNOPSIS is fat.
+More investigations is needed with  L<B::C> and L<perlcc>.
 
 =head1 AUTHOR
 
