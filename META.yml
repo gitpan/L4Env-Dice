@@ -1,7 +1,7 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         L4Env-Dice
-version:      0.01_1
+version:      0.01_05
 version_from: lib/L4Env/Dice.pm
 installdirs:  site
 requires:

@@ -1,15 +1,19 @@
 L4Env-Dice version 0.01
 =======================
 
-L4Env::Dice is a perl extension to facilitate user
-interaction with L4 inner system calls.
+	L4Env::Dice is a perl extension to facilitate user
+	interaction with the underlaying user-level API.
 
-The current state of this module is reflected
-by consulting manual pages for L4Env::Dice:
+	In short, we'll define hooks (in perl!) 
+	to the L4Env kit -- a common L4 development environment.
 
-perldoc L4Env::Dice 
+	The current state of this module is reflected
+	by issuing:
+
+	perldoc L4Env::Dice 
 
 INSTALLATION
+============
 
 To install this module type the following:
 
@@ -19,31 +23,36 @@ To install this module type the following:
    make install
 
 DEPENDENCIES
+============
 
-	Currenty, i'm only considering only dice or idl4 ans thus an L4 
-	implementation as raw basic requirements. 
+	L4 microkernel. Version 2 API (Fiasco) or X.2 API (L4Ka::Pistachio).
+	DICE or IDL4 IDL compiler
+	L4Env (DROPS version) or OSKit
+	L4-Linux snapshot (recommended)
+	GCC 	>= 3.4
+	perl 	>= 5.8.5 
+	
+NOTICE
+======
 
-	This module does not assert any particularities about the
-	resulting (L4) interfaces, and thus doesn't give any particular
-	hints on those user-defined facilities.  
+	***	This 'whole thing' *is* experimental! ***
 
-WARNING
+	The user acknowledges full responsability 
+	over his use or if all things fall apart (kind of sad, heh?).
 
-	This code is experimental! We expect the user
-	full responsability over his own use and we dont gives
-	any garants over an expected rationale.. In others words,
-	you're on our own if expect something out of it.  
-	For everything else, I wish yourself having fun hacking on L4
-	and exploring the capabilities of such implementations :-)
+	In others words,
+	you're on our own in the case thou expect something out of it. 
+ 
+	For everything else, 
 
 	Happy Hacking!
 
 COPYRIGHT AND LICENCE
+=====================
 
-Copyright (C) 2004 by Etienne Robillard
+	Copyright (C) 2004 by Etienne Robillard
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.8.5 or,
-at your option, any later version of Perl 5 you may have available.
-
+	This library is free software; you can redistribute it and/or modify
+	it under the same terms as Perl itself, either Perl version 5.8.5 or,
+	at your option, any later version of Perl 5 you may have available.
 

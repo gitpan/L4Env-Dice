@@ -1,11 +1,11 @@
 Changes
-Dice.xs
 Makefile.PL
 MANIFEST
-MAINTAINER
-ppport.h
+xs/ppport.h
 README
-include/template_config.h
+lib/L4Env/Introduction.pod
+lib/L4Env/Notes.pod
 t/L4Env-Dice.t
+t/mk_private.t
 lib/L4Env/Dice.pm
 META.yml                                 Module meta-data (added by MakeMaker)

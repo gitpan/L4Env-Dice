@@ -1,0 +1,20 @@
+=head1 INTRODUCTION
+
+(insert nifty quote here)
+
+=head2 Opening
+
+Welcome to the L<L4Env::Dice> project! 
+
+=head2 Small introduction to L4 
+
+L4 is a real-time microkernel architecture. 
+It was first developed by Jochen Liedtke et al.
+
+It's known to be stable enough for production environments,
+but there's still research in-progress.
+
+=head1 METHODOLOGY 
+
+META: Draft-mode!
+

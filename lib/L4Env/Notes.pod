@@ -1,0 +1,29 @@
+=head1 NOTES
+
+META: Draft-mode! 
+
+=head2 The DROPS L4Env API
+
+You can find up-to-date documentation for L4Env at:
+L<http://os.inf.tu-dresden.de/l4env/doc>.
+
+=head2 H2xs, perlcc and (perl) backends in general
+
+L<h2xs> is a great tool designed to produce valuable XS code 
+from,  say, C headers files. 
+
+You invoke the B::C backend like this:
+
+	# compile into a binary executable file:    
+	perl -MO=C, -o some_app some_app.pm 
+
+=head2 Callbacks, IPC, L4 and Perl soup
+
+Can we use perl callbacks in our stuff?
+
+Likewise: L4Env::Dice::WithCallbacks.
+
+In the case of IPC: L4Env::Dice::IPC.
+
+
+
