@@ -1,0 +1,75 @@
+L4Env-Dice version 0.01
+=======================
+
+L4Env::Dice is a perl extension to facilitate user
+interaction with L4 inner system calls.
+
+The current state of this module is reflected
+by consulting manual pages for L4Env::Dice:
+
+perldoc L4Env::Dice 
+
+QUICK INSTALL (for the impatients)
+
+1. cp include/template_config.h to include/config.h
+
+2. perl Makefile.PL INC=-I./include LIB=/some/dst POLLUTE=1  
+   make;  
+   ... 
+   make install;
+
+3. write my_perl_lib.pl:
+
+	#!/usr/bin/perl -w
+	use MyCompiler::Blurb;
+	use strict;
+	print "Hello World";
+	1;		
+
+4. transform this file in C code*:
+
+	perl -MO=C, -o my_client my_perl_lib.pl
+
+* Note: this requires the experimental B::C back-end.
+
+5. invoke dice compiler on the resulting lib:      
+		dice [options] my_client ... 
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+DEPENDENCIES
+
+	Currenty, i'm only considering only dice or idl4 ans thus an L4 
+	implementation as raw basic requirements. 
+
+	This module does not assert any particularities about the
+	resulting (L4) interfaces, and thus doesn't give any particular
+	hints on those user-defined facilities.  
+
+WARNING
+
+	This code is experimental! We expect the user
+	full responsability over his own use and we dont gives
+	any garants over an expected rationale.. In others words,
+	you're on our own if expect something out of it.  
+	For everything else, I wish yourself having fun hacking on L4
+	and exploring the capabilities of such implementations :-)
+
+	Happy Hacking,
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2004 by Etienne Robillard
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.8.5 or,
+at your option, any later version of Perl 5 you may have available.
+
+

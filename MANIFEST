@@ -1,0 +1,11 @@
+Changes
+Dice.xs
+Makefile.PL
+MANIFEST
+MAINTAINER
+ppport.h
+README
+include/template_config.h
+t/L4Env-Dice.t
+lib/L4Env/Dice.pm
+META.yml                                 Module meta-data (added by MakeMaker)

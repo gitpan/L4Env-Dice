@@ -1,0 +1,6 @@
+Revision history for Perl extension L4Env::Dice.
+
+0.01  Sat Nov  6 15:12:45 2004
+	- original version; created by h2xs 1.23 with options
+		-A -n L4Env::Dice -b 5.0.5
+
